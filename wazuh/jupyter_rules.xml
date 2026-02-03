@@ -1,0 +1,47 @@
+<group name="jupyterhub_audit_raw">
+  <rule id="100500" level="3">
+   <!-- <decoded_as>k8s_stdout_json</decoded_as> -->
+    <match>jupyter-audit-system</match>
+    <description>JupyterHub audit raw log (stdout JSON)  - visible via alerts</description>
+  </rule>
+</group>
+
+<group name="jupyterhub_candidate,jupyterhub,exfiltration,mitre">
+
+  <rule id="100501" level="10">
+    <if_sid>100500</if_sid>
+    <regex>curl|wget|rclone|rsync|scp|sftp|gsutil|azcopy|gdrive</regex>
+    <description>Potential data transfer tool usage from JupyterHub</description>
+  </rule>
+
+  <rule id="100502" level="9">
+    <if_sid>100500</if_sid>
+    <regex>pydrive|googleapiclient|google.cloud|boto3|azure.storage</regex>
+    <description>Cloud SDK or cloud API library usage detected</description>
+  </rule>
+
+  <rule id="100503" level="8">
+    <if_sid>100500</if_sid>
+    <regex>zipfile|tarfile|make_archive|base64|gpg|openssl|cryptography</regex>
+    <description>Packaging or encoding operation detected before potential export</description>
+  </rule>
+
+  <rule id="100504" level="12">
+    <if_sid>100500</if_sid>
+    <regex>GOOGLE_APPLICATION_CREDENTIALS|AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY|service_account|api_key|access_token</regex>
+    <description>Credential or token usage detected in JupyterHub</description>
+  </rule>
+
+  <rule id="100505" level="9">
+    <if_sid>100500</if_sid>
+    <regex>upload|post|put|to_csv|to_parquet|to_json</regex>
+    <description>Possible bulk or export-related data operation</description>
+  </rule>
+
+  <rule id="100506" level="11">
+    <if_sid>100500</if_sid>
+    <regex>requests.post|requests.put|requests.patch|httpx.post|httpx.put|urllib.request</regex>
+    <description>Outbound network communication detected from JupyterHub</description>
+  </rule>
+
+</group>

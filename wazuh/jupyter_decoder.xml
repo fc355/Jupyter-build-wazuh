@@ -1,0 +1,7 @@
+<decoder name="k8s_stdout_json">
+  <prematch>stdout F {</prematch>
+  <regex type="pcre2">
+    \{.*\}
+  </regex>
+  <order>json_payload</order>
+</decoder>
